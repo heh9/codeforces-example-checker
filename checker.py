@@ -25,14 +25,16 @@ def main(soup):
 
 		input_match = re.findall(pat, str(_input))
 		output_match = re.findall(pat, str(_output))
-		p = subprocess.Popen(["./main"], stdin=subprocess.PIPE,
+		p = subprocess.Popen(["./" + file_to_compile[:-4]], stdin=subprocess.PIPE,
 						 	 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		i_lines = ""
 		o_lines = ""
 		for line in input_match: i_lines += convert_gt_lt(line) + '\n'
 		stdout, stderr = p.communicate(i_lines.encode("utf-8"))
 		stdout = stdout.decode("utf-8")
-		for line in output_match: o_lines += line + '\n'
+		if len(output_match) > 1: 
+			for line in output_match: o_lines += line + '\n'
+		else: o_lines = output_match[0]
 		if (o_lines == stdout):
 			print(80 * '-')
 			print ("Test " + str(t_nr) + ": [OK]")
@@ -47,5 +49,5 @@ problem_link = get_problem_link(file_to_compile)
 web_page = urllib.request.urlopen(problem_link)
 soup_page = BeautifulSoup(web_page, "html.parser")
 
-subprocess.call(["g++", file_to_compile, "-o", "main"])
+subprocess.call(["g++", file_to_compile, "-o", file_to_compile[:-4]])
 main(soup_page)
