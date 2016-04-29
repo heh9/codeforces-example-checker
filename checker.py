@@ -1,53 +1,74 @@
 import os, sys, urllib, re, subprocess
 from bs4 import BeautifulSoup
 
-def get_problem_link(f):
-	with open(f, 'r') as infile:
+to_replace = {
+	"&gt;" : '>',
+	"&lt;" : '<'
+}
+
+def get_link(file):
+	with open(file, 'r') as infile:
 		return infile.readline()[2:]
 
-def convert_gt_lt(string):
-	string = string.replace('&lt;', '<')
-	string = string.replace('&gt;', '>')
+def convert_repl(string):
+	for k, v in to_replace.items():
+		string.replace(k, v)
 	return string
 
-def main(soup):
-	s_inputs = soup.find_all('div', attrs = {"class" : "input"})
-	s_outputs = soup.find_all('div', attrs = {"class" : "output"})
-	outs = []
-	t_nr = 0
+def compile(name):
+	name = name[:name.find('.')]
+	if lang == "c++":
+		subprocess.call(["g++", source, "-o", name])
 
-	for sr_input, sr_output in zip(s_inputs, s_outputs):
-		t_nr += 1
-		_input = sr_input.find_all('pre')
-		_output = sr_output.find_all('pre')
+def run(name, input):
+	if lang == "c++":
+		p = subprocess.Popen(["./" + name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	stdout, stderr = p.communicate(input.encode("utf-8"))
+	return stdout.decode("utf-8")
+
+def comp_test(texample, tuser, nr):
+	if (texample == tuser):
+		print ("Test" + str(nr) + ": [OK]")
+	else: 
+		print("Test" + str(nr) + ": [X]\n" + "Input:\n" + i_lines +
+			  "Your answer:\n" + tuser + "\nExpected answer:\n" + texample)
+
+def main(soup):
+	compile(source)
+	if lang == "c++": exe = source[:source.find('.')]
+	inputs = soup.find_all('div', attrs = {"class" : "input"})
+	outputs = soup.find_all('div', attrs = {"class" : "output"})
+	test_nr = 0
+
+	for pre_input, pre_output in zip(inputs, outputs):
+		test_nr += 1
+		raw_in = pre_input.find_all('pre')
+		raw_out = pre_output.find_all('pre')
 
 		pat = r"\>(.+?)\<"
 
-		input_match = re.findall(pat, str(_input))
-		output_match = re.findall(pat, str(_output))
-		p = subprocess.Popen(["./" + file_to_compile[:-4]], stdin=subprocess.PIPE,
-						 	 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		i_lines = ""
-		o_lines = ""
-		for line in input_match: i_lines += convert_gt_lt(line) + '\n'
-		stdout, stderr = p.communicate(i_lines.encode("utf-8"))
-		stdout = stdout.decode("utf-8")
-		if len(output_match) > 1: 
-			for line in output_match: o_lines += line + '\n'
-		else: o_lines = output_match[0]
-		if (o_lines == stdout):
-			print(80 * '-')
-			print ("Test " + str(t_nr) + ": [OK]")
-		else: 
-			print(80 * '-')
-			print("Test " + str(t_nr) + ": [X]\n" + "Input:\n" + i_lines +
-				  "Your answer:\n" + stdout + "\nExpected answer:\n" + o_lines)
+		raw_in = re.findall(pat, str(raw_in))
+		raw_out = re.findall(pat, str(raw_out))
 
-file_to_compile = sys.argv[1]
-problem_link = get_problem_link(file_to_compile)
+		input_str = ""
+		output_str = ""
+		for line in raw_in: 
+			input_str += convert_repl(line) + '\n'
 
-web_page = urllib.request.urlopen(problem_link)
+		stdout = run(exe, input_str)
+
+		if len(raw_out) > 1: 
+			for line in raw_out: output_str += line + '\n'
+		else: output_str = raw_out[0]
+
+		print(80 * '-')
+		comp_test(stdout, output_str, test_nr)
+
+source = sys.argv[1]
+link = get_link(source)
+lang = "c++"
+
+web_page = urllib.request.urlopen(link)
 soup_page = BeautifulSoup(web_page, "html.parser")
 
-subprocess.call(["g++", file_to_compile, "-o", file_to_compile[:-4]])
 main(soup_page)
