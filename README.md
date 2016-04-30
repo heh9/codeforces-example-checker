@@ -1,4 +1,9 @@
 # codeforces-example-checker
+Requirements:
+
+```pip install -r requirements.txt```
+
+--
 
 In source.cpp:
 
