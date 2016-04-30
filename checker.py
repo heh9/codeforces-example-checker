@@ -34,9 +34,9 @@ def comp_test(input_s, texample, tuser, nr):
 	if tuser.count('\n') < 2: tuser = tuser.strip('\n') 
 	
 	if (out_comp == tuser):
-		print ("Test" + str(nr) + ": [OK]")
+		print ("Test #" + str(nr) + ": [OK]")
 	else: 
-		print("Test" + str(nr) + ": [X]\n" + "Input:\n" + input_s +
+		print("Test #" + str(nr) + ": [X]\n" + "Input:\n" + input_s +
 			  "Your answer:\n" + tuser + "\nExpected answer:\n" + out_comp)
 
 def main(soup):
