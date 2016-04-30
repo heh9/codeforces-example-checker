@@ -27,6 +27,7 @@ def run(name, input):
 	return stdout.decode("utf-8")
 
 def comp_test(input_s, texample, tuser, nr):
+	out_comp = ""
 	if len(texample) > 1: 
 		for line in texample: out_comp += line + '\n'
 	else: out_comp = texample[0]
