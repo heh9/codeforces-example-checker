@@ -27,11 +27,16 @@ def run(name, input):
 	return stdout.decode("utf-8")
 
 def comp_test(input_s, texample, tuser, nr):
-	if (texample == tuser):
+	if len(texample) > 1: 
+		for line in texample: out_comp += line + '\n'
+	else: out_comp = texample[0]
+	if len(tuser) < 3: tuser = tuser[0]
+
+	if (out_comp == tuser):
 		print ("Test" + str(nr) + ": [OK]")
 	else: 
 		print("Test" + str(nr) + ": [X]\n" + "Input:\n" + input_s +
-			  "Your answer:\n" + tuser + "\nExpected answer:\n" + texample)
+			  "Your answer:\n" + tuser + "\nExpected answer:\n" + out_comp)
 
 def main(soup):
 	compile(source)
@@ -55,14 +60,10 @@ def main(soup):
 		for line in raw_in: 
 			input_str += convert_repl(line) + '\n'
 
-		stdout = run(exe, input_str)
-
-		if len(raw_out) > 1: 
-			for line in raw_out: output_str += line + '\n'
-		else: output_str = raw_out[0]
+		user_out = run(exe, input_str)
 
 		print(80 * '-')
-		comp_test(input_str, stdout, output_str, test_nr)
+		comp_test(input_str, raw_out, user_out, test_nr)
 
 source = sys.argv[1]
 link = get_link(source)
