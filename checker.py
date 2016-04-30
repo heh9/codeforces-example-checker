@@ -31,8 +31,8 @@ def comp_test(input_s, texample, tuser, nr):
 	if len(texample) > 1: 
 		for line in texample: out_comp += line + '\n'
 	else: out_comp = texample[0]
-	if len(tuser) < 3: tuser = tuser[0]
-
+	if tuser.count('\n') < 2: tuser = tuser.strip('\n') 
+	
 	if (out_comp == tuser):
 		print ("Test" + str(nr) + ": [OK]")
 	else: 
