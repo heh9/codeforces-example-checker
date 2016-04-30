@@ -26,11 +26,11 @@ def run(name, input):
 	stdout, stderr = p.communicate(input.encode("utf-8"))
 	return stdout.decode("utf-8")
 
-def comp_test(texample, tuser, nr):
+def comp_test(input_s, texample, tuser, nr):
 	if (texample == tuser):
 		print ("Test" + str(nr) + ": [OK]")
 	else: 
-		print("Test" + str(nr) + ": [X]\n" + "Input:\n" + i_lines +
+		print("Test" + str(nr) + ": [X]\n" + "Input:\n" + input_s +
 			  "Your answer:\n" + tuser + "\nExpected answer:\n" + texample)
 
 def main(soup):
@@ -62,7 +62,7 @@ def main(soup):
 		else: output_str = raw_out[0]
 
 		print(80 * '-')
-		comp_test(stdout, output_str, test_nr)
+		comp_test(input_str, stdout, output_str, test_nr)
 
 source = sys.argv[1]
 link = get_link(source)
