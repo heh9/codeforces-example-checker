@@ -41,7 +41,6 @@ def comp_test(input_s, texample, tuser, nr):
 
 def main(soup):
 	compile(source)
-	if lang == "c++": exe = source[:source.find('.')]
 	inputs = soup.find_all('div', attrs = {"class" : "input"})
 	outputs = soup.find_all('div', attrs = {"class" : "output"})
 	test_nr = 0
@@ -73,4 +72,6 @@ lang = "c++"
 web_page = urllib.request.urlopen(link)
 soup_page = BeautifulSoup(web_page, "html.parser")
 
+if lang == "c++": exe = source[:source.find('.')]
 main(soup_page)
+subprocess.call(["rm", exe])
