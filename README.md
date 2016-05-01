@@ -4,7 +4,7 @@
 
 ```$ chmod +x install.sh```
 
-```$ sudo ./install.sh```
+```$ ./install.sh```
 
 ```$ python3.5 -m pip install -r requirements.txt```
 
